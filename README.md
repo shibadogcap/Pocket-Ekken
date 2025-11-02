@@ -26,14 +26,13 @@
 
 構成のイメージは以下の図のようになる。
 
-![構成図](./images/構成.png)
+![構成図](./sample/構成.png)
 
 # 実験方法
-ここでは、実際にObsidianを用いて実験レポートを作成する手順を説明する。
-まず、スマートフォンまたはPCにObsidianをインストールする。Obsidianは[公式サイト](https://obsidian.md/)からダウンロードできる。
-続いて、このレポジトリをダウンロードする。ブラウザで[このレポジトリ](https://github.com/shibadogcap/Pocket-Ekken)にアクセスし、緑の「Code」ボタンをクリックしてリポジトリをダウンロードする。
+まず、スマートフォンまたはPCにObsidianをインストールした。Obsidianは[公式サイト](https://obsidian.md/)やPlayストア、App Storeからダウンロードできる。
+続いて、ファイル同期を行うために、GitHubのアカウントを作成した。
 
-![レポジトリ](./images/repo.png)
+![レポジトリ](./sample/repo.png)
 
 ダウンロードしたzipファイルを解凍し、適当な場所に保存する。
 
@@ -57,4 +56,4 @@
 
 # 付録
 
-[^1]: 例えば、代表的なオンラインLaTeXエディタであるOverleafの[ステータスページ](https://status.overleaf.com) によれば代表的なオンラインLaTeXエディタであるOverleafは、2025年8月に3時間ほどサービスが停止したことがある。
+[^1]: 例えば、代表的なオンラインLaTeXエディタであるOverleafの[ステータスページ](https://status.overleaf.com) によればOverleafは、2025年8月に3時間ほどサービスが停止したことがある。

@@ -1,0 +1,150 @@
+name: Build TeX and Create Release
+
+on:
+  push:
+    branches: [ main ]
+    # pushイベント全体で起動させますが、dorny/paths-filterで.texファイルのみを対象にします
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # リポジトリのチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 変更された.texファイルの検出（任意のディレクトリ内のものも対象）
+      - name: Filter changed TeX files
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            tex:
+              - '**/*.tex'
+          list-files: shell
+
+
+
+      # TeX Live環境のセットアップとコンパイル（xu-cheng/texlive-actionを利用）
+      - name: Setup TeX Live and Compile TeX files (lualatex)
+        if: steps.filter.outputs.tex == 'true'
+        uses: xu-cheng/texlive-action@v3
+        with:
+          run: |
+            for file in ${{ steps.filter.outputs.tex_files }}; do
+              echo "Compiling $file with lualatex..."
+              # 参照を解決するため2回実行
+              lualatex -interaction=nonstopmode "$file" || true
+              lualatex -interaction=nonstopmode "$file" || true
+              echo "Compilation completed for $file"
+            done
+
+      # コンパイル後、対応するPDFファイルを収集
+      - name: Gather PDF files
+        id: gather_pdfs
+        run: |
+          # ユニークなファイル名でPDFを保存するディレクトリを作成
+          mkdir -p release_pdfs
+          FILE_LIST=""
+          PDF_COUNT=0
+          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+          
+          for file in ${{ steps.filter.outputs.tex_files }}; do
+            if [ -z "$file" ]; then
+              continue
+            fi
+            # 通常は.texと同じディレクトリに同名の.pdfが生成される前提
+            pdf_file="${file%.tex}.pdf"
+            if [ -f "$pdf_file" ]; then
+              base_name=$(basename "$file" .tex)
+              PDF_COUNT=$((PDF_COUNT + 1))
+              
+              # ユニークなファイル名を生成（タイムスタンプ + 連番）
+              unique_name="latex_build_${TIMESTAMP}_${PDF_COUNT}.pdf"
+              
+              # PDFをユニークなファイル名でコピー
+              cp "$pdf_file" "release_pdfs/${unique_name}"
+              
+              # SHA256ハッシュを計算（検証用）
+              pdf_hash=$(sha256sum "$pdf_file" | awk '{print $1}')
+              pdf_size=$(stat -f%z "$pdf_file" 2>/dev/null || stat -c%s "$pdf_file")
+              
+              # ファイル情報をリストに追加
+              FILE_LIST="$FILE_LIST### 📄 \`${unique_name}\`"$'\n'
+              FILE_LIST="$FILE_LIST- **元のTeXファイル:** \`$file\`"$'\n'
+              FILE_LIST="$FILE_LIST- **元のファイル名:** \`${base_name}.pdf\`"$'\n'
+              FILE_LIST="$FILE_LIST- **サイズ:** $(numfmt --to=iec-i --suffix=B $pdf_size 2>/dev/null || echo \"${pdf_size} bytes\")"$'\n'
+              FILE_LIST="$FILE_LIST- **SHA256:** \`${pdf_hash:0:16}...\`"$'\n'
+              FILE_LIST="$FILE_LIST"$'\n'
+              
+              echo "✓ Generated: ${unique_name} <- ${base_name}.pdf"
+            else
+              echo "Warning: PDF not found for $file"
+            fi
+          done
+          echo "pdf_count=$PDF_COUNT" >> $GITHUB_OUTPUT
+          echo "file_list<<EOF" >> $GITHUB_OUTPUT
+          echo "$FILE_LIST" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          # デバッグ: release_pdfsディレクトリの内容を表示
+          echo "=== Files in release_pdfs directory ==="
+          ls -la release_pdfs/
+          echo "========================================"
+      
+      # リリース情報の準備
+      - name: Prepare release info
+        id: release_info
+        run: |
+          TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+          SHORT_DATE=$(date +"%Y-%m-%d")
+          # PDFファイル名のリストを取得（タイトル用）
+          TITLE_NAMES=""
+          for file in ${{ steps.filter.outputs.tex_files }}; do
+            base_name=$(basename "$file" .tex)
+            if [ -z "$TITLE_NAMES" ]; then
+              TITLE_NAMES="$base_name"
+            else
+              TITLE_NAMES="$TITLE_NAMES, $base_name"
+            fi
+          done
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "short_date=$SHORT_DATE" >> $GITHUB_OUTPUT
+          echo "title_names=$TITLE_NAMES" >> $GITHUB_OUTPUT
+
+      # GitHub Releaseの作成（例: softprops/action-gh-releaseを利用）
+      # Create release and attach generated PDFs (only if PDFs were found)
+      - name: Create GitHub Release with PDFs
+        id: create_release
+        if: steps.gather_pdfs.outputs.pdf_count > 0
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "latex-build-${{ steps.release_info.outputs.short_date }}-${{ github.run_number }}"
+          name: "[${{ steps.release_info.outputs.title_names }}] - ${{ steps.release_info.outputs.timestamp }}"
+          body: |
+            ## 📄 LaTeX Build
+
+            **⏰ ビルド時刻:** ${{ steps.release_info.outputs.timestamp }}
+            **📝 コミット:** [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            **👤 作成者:** ${{ github.event.head_commit.author.name }}
+            **💬 コミットメッセージ:** 
+            ```
+            ${{ github.event.head_commit.message }}
+            ```
+
+            ---
+
+            ## 📦 生成されたPDFファイル
+            
+            各PDFファイルは、GitHubの制限を回避するためユニークなファイル名（`latex_build_YYYYMMDD_HHMMSS_N.pdf`）でアップロードされています。
+            以下の対応表で元のTeXファイルとの関連を確認してください。
+            
+            ${{ steps.gather_pdfs.outputs.file_list }}
+            
+            > **💡 ヒント:** ダウンロード後、ファイルの整合性を確認するには:
+            > - Windows: `certutil -hashfile ファイル名.pdf SHA256`
+            > - Linux/Mac: `sha256sum ファイル名.pdf`
+          files: release_pdfs/*.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,110 @@
+\documentclass[paper=a4]{jlreq}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{diffcoeff}
+\usepackage{comment}
+\usepackage{mhchem}
+\usepackage[separate-uncertainty]{siunitx}
+\usepackage{newunicodechar}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{lscape}
+\usepackage{adjustbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NewDocumentCommand\degC{}{\ensuremath{^\circ\symup{C}}}
+\NewDocumentCommand\abs{m}{\left|#1\right|}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\jlreqsetup{
+    appendix_counter={
+        section={
+            value=0,
+            the={\Alph{section}}
+        },
+        table={
+            value=0,
+            the={\Alph{section}\arabic{table}}
+        },
+        figure={
+            value=0,
+            the={\Alph{section}\arabic{figure}}
+        }
+    },
+    appendix_heading={
+        section={
+            label_format={付録\thesection:}
+        }
+    }
+}
+
+\title{基礎科学実験をスマホで攻略する}
+\author{UEC25 \\ xxxxxxx 柴犬被り}
+\date{}
+
+
+\begin{document}
+
+\maketitle\section{Pocket-Ekken}\label{sec:pocket-ekken}\section{実験の目的}\label{sec:実験の目的}\subsection{目的}\label{sec:目的}
+このレポジトリは，LaTeXやVSCodeなどの環境構築なしで，スマートフォンを含む環境で簡単に基礎科学実験Aで使用できる実験レポートを制作できるようにすることを目的としている．
+\subsection{背景}\label{sec:背景}
+基礎科学実験Aで実験レポートを作成する際，VSCodeと$\LaTeX$を使用するのが一般的になっている．
+しかし，これらの環境を用意するのは面倒であるし，使い勝手もよいといえない．具体的に例を挙げると
+\begin{itemize}
+\item 
+ローカルでのLaTeXの環境構築には時間がかかり，ある程度のPCスキルが必要である．
+\item 
+ローカルでの執筆を前提とすると，バックアップに不安がある．
+\item 
+オンラインエディタを使用する場合，安定したインターネット接続が必要で，サービスが常に利用可能である保証がない[^1]
+\item 
+基本的に.texを編集するのはコードエディタであり，長文を書くのに向いていない．
+\item 
+いずれの環境でもスマートフォンでレポートを確認したり編集したりするのは難しい．
+\end{itemize}
+
+などの問題がある．
+そこで，本レポジトリでは，マークダウンエディタ\href{https://obsidian.md/}{Obsidian}を用いて，スマートフォンを含む様々な環境で簡単に実験レポートを作成できるようにする．
+\section{実験の原理}\label{sec:実験の原理}
+背景の問題を解決するために，以下の方針を採用した．
+\begin{enumerate}
+\item 
+ObsidianのVaultを配布することで，環境構築を不要にする．
+\item 
+スマートフォンアプリのObsidianを使用することで，スマートフォンでの編集・確認を可能にする．
+\item 
+マークダウンファイルをそのままコンパイルできる.texファイルに変換するスクリプトを提供することで，.texファイルの編集を不要にする．
+\item 
+GitHubと同期することを前提とし，バックアップを容易にするとともに，GitHub Actionsを用いて自動的にPDFを生成する．
+\end{enumerate}
+
+構成のイメージは以下の図のようになる．
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{./images/構成.png}
+\caption{構成のイメージ}
+\end{figure}
+
+\section{実験方法}\label{sec:実験方法}
+ここでは，実際にObsidianを用いて実験レポートを作成する手順を説明する．
+まず，スマートフォンまたはPCにObsidianをインストールする．Obsidianは\href{https://obsidian.md/}{公式サイト}からダウンロードできる．
+続いて，このレポジトリをダウンロードする．ブラウザで\href{https://github.com/shibadogcap/Pocket-Ekken}{このレポジトリ}にアクセスし，緑の「Code」ボタンをクリックしてリポジトリをダウンロードする．
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{./images/repo.png}
+\caption{GitHubレポジトリ}
+\end{figure}
+
+
+ダウンロードしたzipファイルを解凍し，適当な場所に保存する．
+\section{実験結果}\label{sec:実験結果}\section{考察}\label{sec:考察}\section{まとめ}\label{sec:まとめ}\section{参考文献}\label{sec:参考文献}\section{付録}\label{sec:付録}
+\end{document}

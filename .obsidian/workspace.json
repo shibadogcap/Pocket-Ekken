@@ -1,0 +1,303 @@
+{
+  "main": {
+    "id": "21cd710de36fa12e",
+    "type": "split",
+    "children": [
+      {
+        "id": "16aea4dd7904c0b3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c9cfd8223f25808b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
+            }
+          },
+          {
+            "id": "c67f3359289dfdd1",
+            "type": "leaf",
+            "state": {
+              "type": "codeview",
+              "state": {
+                "file": "README_2025-11-02.tex"
+              },
+              "icon": "lucide-file",
+              "title": "README_2025-11-02"
+            }
+          }
+        ]
+      },
+      {
+        "id": "6f9767330023ec8a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "093de20c48a046f6",
+            "type": "leaf",
+            "state": {
+              "type": "webviewer",
+              "state": {
+                "url": "https://github.com/",
+                "title": "GitHub · Change is constant. GitHub keeps you ahead. · GitHub",
+                "mode": "webview"
+              },
+              "icon": "globe-2",
+              "title": "GitHub · Change is constant. GitHub keeps you ahead. · GitHub"
+            }
+          },
+          {
+            "id": "d8a70bcdf0f1a2c7",
+            "type": "leaf",
+            "state": {
+              "type": "webviewer",
+              "state": {
+                "url": "https://aistudio.google.com/welcome",
+                "title": "Google AI Studio",
+                "mode": "webview"
+              },
+              "icon": "globe-2",
+              "title": "Google AI Studio"
+            }
+          },
+          {
+            "id": "d27f1367ee53b1c2",
+            "type": "leaf",
+            "state": {
+              "type": "webviewer",
+              "state": {
+                "url": "https://publish.obsidian.md/help-ja/%E3%82%AC%E3%82%A4%E3%83%89/%E3%83%8E%E3%83%BC%E3%83%88%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%99%E3%82%8B",
+                "title": "ノートをフォーマットする - Obsidian 日本語ヘルプ - Obsidian Publish",
+                "mode": "webview"
+              },
+              "icon": "globe-2",
+              "title": "ノートをフォーマットする - Obsidian 日本語ヘルプ - Obsidian Publish"
+            }
+          },
+          {
+            "id": "15391d035c054902",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "新規タブ"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b97e30d0c653523c",
+    "type": "split",
+    "children": [
+      {
+        "id": "4831c66a27fd99ea",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "84d6fbd6cfd9872d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "ファイルエクスプローラ"
+            }
+          },
+          {
+            "id": "9da33ad7a7143345",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "検索"
+            }
+          },
+          {
+            "id": "3e8a0f1b361142d7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "ブックマーク"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "faea922ec549a036",
+    "type": "split",
+    "children": [
+      {
+        "id": "84d9e81ceb39784d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f66ba036b42709d1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Templater/Ekken.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Ekkenへのバックリンク"
+            }
+          },
+          {
+            "id": "04e1b5153954a4c2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Templater/Ekken.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Ekkenからのアウトゴーイングリンク"
+            }
+          },
+          {
+            "id": "f4627ac533a10d5f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "タグ"
+            }
+          },
+          {
+            "id": "f335154fd8259384",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Templater/Ekken.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Ekkenのアウトライン"
+            }
+          },
+          {
+            "id": "f25144abbbefd253",
+            "type": "leaf",
+            "state": {
+              "type": "footnotes",
+              "state": {
+                "file": "Templater/Ekken.md"
+              },
+              "icon": "lucide-file-signature",
+              "title": "Footnotes"
+            }
+          },
+          {
+            "id": "9a7d8c0edd293284",
+            "type": "leaf",
+            "state": {
+              "type": "copilot-chat-view",
+              "state": {},
+              "icon": "message-square",
+              "title": "Copilot"
+            }
+          },
+          {
+            "id": "dff5c910b35877dd",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:クイックスイッチャーを開く": false,
+      "graph:グラフビューを開く": false,
+      "canvas:新規キャンバスを作成": false,
+      "templates:テンプレートを挿入": false,
+      "command-palette:コマンドパレットを開く": false,
+      "bases:Create new base": false,
+      "templater-obsidian:Templater": false,
+      "export-to-tex-enhanced:Export current file to TeX": false,
+      "export-to-tex-enhanced:Export current file to clipboard": false,
+      "copilot:Open Copilot Chat": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "c9cfd8223f25808b",
+  "lastOpenFiles": [
+    "README_2025-11-02.tex",
+    "README.md",
+    "images/repo.png",
+    "images/image.png",
+    "image.png",
+    "images/構成.png",
+    "images",
+    "構成.png",
+    "構成",
+    "Image.drawio",
+    "copilot/copilot-conversations/やあ@20251102_111804.md",
+    "copilot/copilot-conversations",
+    "copilot",
+    "Templater/Ekken.md",
+    "sample",
+    "無題のファイル.md",
+    "Templater/無題のファイル.md",
+    "フォルダ/無題のファイル.md",
+    "Templater/無題のファイル 1.md",
+    "main",
+    "Templater"
+  ]
+}

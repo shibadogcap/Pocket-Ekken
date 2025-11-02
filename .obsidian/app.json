@@ -1,0 +1,16 @@
+{
+  "strictLineBreaks": false,
+  "readableLineLength": false,
+  "showLineNumber": true,
+  "spellcheck": false,
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "current",
+  "newLinkFormat": "relative",
+  "useMarkdownLinks": true,
+  "showUnsupportedFiles": true,
+  "attachmentFolderPath": "./",
+  "userIgnoreFilters": [
+    "Templater/",
+    "LICENSE"
+  ]
+}

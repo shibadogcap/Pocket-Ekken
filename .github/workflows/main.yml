@@ -27,7 +27,7 @@ jobs:
 
 
 
-      # TeX Live環境のセットアップとコンパイル（xu-cheng/texlive-actionを利用）
+      # TeX Live環境のセットアップとコンパイル(xu-cheng/texlive-actionを利用)
       - name: Setup TeX Live and Compile TeX files (lualatex)
         if: steps.filter.outputs.tex == 'true'
         uses: xu-cheng/texlive-action@v3
@@ -35,9 +35,14 @@ jobs:
           run: |
             for file in ${{ steps.filter.outputs.tex_files }}; do
               echo "Compiling $file with lualatex..."
+              # ファイルのディレクトリに移動してコンパイル
+              file_dir=$(dirname "$file")
+              file_name=$(basename "$file")
+              cd "$file_dir"
               # 参照を解決するため2回実行
-              lualatex -interaction=nonstopmode "$file" || true
-              lualatex -interaction=nonstopmode "$file" || true
+              lualatex -interaction=nonstopmode "$file_name" || true
+              lualatex -interaction=nonstopmode "$file_name" || true
+              cd -
               echo "Compilation completed for $file"
             done
 

@@ -28,105 +28,106 @@
 
 構成のイメージは以下の図のようになる。
 
-![構成図](./sample/images/architecture_diagram.png)
+![](./sample/images/architecture_diagram.png)
 
 # 実行方法
 ## GitHub側の操作
 はじめに、[GitHubのサイト](https://github.com/)にアクセスし、アカウントを作成した。方法は問わないが、
 以下の図のようにメニューから「Sign up」を選択するとGoogleアカウントやApple IDに紐づけたアカウントを作成できた。
 
-![GitHubアカウント作成](./sample/images/create_github_account.png)
+![](./sample/images/create_github_account.png)
 
 アカウントが作成できたら、[Pocket-Ekkenのレポジトリ](https://github.com/shibadogcap/Pocket-Ekken)にアクセスし、レポジトリをフォークした。
 以下の図のようにボタンを押して、レポジトリの名前を決めたら緑色の「Create fork」ボタンを押すとフォークできた。
 
-![レポジトリのフォーク](./sample/images/fork_repository_part1.png)
+![](./sample/images/fork_repository_01.png)
 
 フォークが完了したら、自分のデータが公開されないように、レポジトリを非公開に設定した。これには二つの手順を踏んだ。
 まずは以下の図のように、レポジトリの設定を開き、下の方にある「Leave fork network」を選択した。警告が表示されるが無視し、指定された文字列を入力して「Leave fork network」を押した。
 
-![フォークネットワークから離脱](./sample/images/leave_fork_network_part2.png)
+![](./sample/images/fork_repository_02.png)
 
 続いて、ページを再読み込みし、レポジトリの設定画面で「Change visibility」を選択し、「Change to private」を押してレポジトリを非公開にした。
 
-![レポジトリを非公開にする](./sample/images/change_to_private_repository_part3.png)
+![](./sample/images/fork_repository_03.png)
 
 続けて、自動ビルドのために、レポジトリでGitHub Actionsを有効にした。以下の図のように、レポジトリの「Actions」タブを選択し、「Enable Actions on this repository」を押した。
 
-![GitHub Actionsの有効化](./sample/images/enable_github_actions.png)
+![](./sample/images/enable_github_actions.png)
 
 最後に、Obsidianで使用するために、パーソナルアクセストークンを取得した。以下の図のように、プロフィールアイコンを押して「Settings」を選択し、「Developer settings」を選択した。
 
-![Developer settingsを選択](./sample/images/open_developer_settings_part1.png)
+![](./sample/images/developer_settings_01.png)
 
 続いて、「Personal access tokens」を選択し、「Tokens (classic)」を選択した。次に、「Generate new token」を押し、「Generate new token (classic)」を選択した。
 
-![トークンの生成](./sample/images/generate_token_part2.png)
+![](./sample/images/developer_generate_token_03.png)
 
 トークンの名前を入力し、repoの権限にチェックを入れたら、「Generate token」を押してトークンを生成した。このとき生成されたトークンは後で使用するが、一度しか表示されないのでコピーして保存した。
 
-![トークンのコピー](./sample/images/copy_token.png)
+![](./sample/images/developer_copy_token_04.png)
 
 ## Obsidian側の操作
 
 まずは、スマートフォンにObsidianアプリをインストールした。iPhoneの場合はApp Store、Androidの場合はGoogle Playからインストールできる。
 インストールが完了したら、Obsidianアプリを起動し、「Create a new vault」→「Continue without sync」の順に選択した。
 
-![Obsidianの初期設定](sample/images/obsidian_setup.png)
+![](./sample/images/obsidian_setup.png)
 
 続けて、vaultに適当な名前を付け、場所にはDevice Storageを選択して「Create a vault」を押した。
 次に、Gitを扱うためのプラグインを導入した。以下の図のように、左上のアイコンからサイドバーを開き、歯車アイコンを押して設定画面を開いた。続いて、「Community plugins」を選択し、「Turn on community plugins」を押した。
 
-![Obsidianで新しいVaultを作成](./sample/images/create_obsidian_vault.png)
+![](./sample/images/create_obsidian_vault.png)
 
 すると、「Browse」ボタンが表示された。ここで「git」と検索、選択したら「Install」、続いて「Enable」を押してプラグインを有効化した。
 
-![コミュニティプラグインの有効化](./sample/images/enable_community_plugins.png)
+![](./sample/images/enable_community_plugins.png)
 
 プラグインが有効化されたら、「Options」を押してプラグインの設定画面を開いた。
 
-![Obsidian Gitプラグインのインストール](./sample/images/install_obsidian_git_plugin.png)
+![](./sample/images/install_obsidian_git_plugin.png)
 
 以下の図のように下の方にUsernameやPersonal Access Tokenを入力する欄があるので、GitHubのユーザ名と先ほど取得したパーソナルアクセストークンを入力した。
 
-![Obsidian Gitプラグインの設定](./sample/images/configure_obsidian_git_plugin.png)
+![](./sample/images/configure_obsidian_git_plugin.png)
 
 トークンを入力したら、ObsidianのNew Tabの画面に戻り、下にスワイプしてCommand Palletteから「Git: Clone an existing remote repo」を選択した。
 そのあとは、以下の図のように、レポジトリのURL→空欄→YES→DELETE ALL YOUR LOCAL CONFIG AND PLUGINS→空欄の順に選択した。
 
-![Obsidianでレポジトリをクローン](./sample/images/clone_repo_in_obsidian.png)
+![](./sample/images/clone_repo_in_obsidian.png)
 
-![Obsidianでレポジトリのクローン完了](./sample/images/clone_complete_obsidian.png)
+![](./sample/images/clone_complete_obsidian.png)
+
 
 しばらく待つと、「Please restart Obsidian」という表示があるので、したがって再起動した。
 再起動し、左サイドバーを確認すると、README.mdなどのファイルが表示されていた。
 
-![ObsidianでTeXにエクスポート2](./sample/images/export_to_tex_obsidian2.png)
+![](./sample/images/export_to_tex_obsidian2.png)
 
 最後に、Gitプラグインの認証情報を再入力した。
 
-![Obsidian Gitプラグインの認証情報再入力](./sample/images/reenter_git_credentials.png)
+![](./sample/images/reenter_git_credentials.png)
 
 先ほどと同様にプラグインの設定画面に移動すると、認証情報のほかにも、コミット時の名前とメールアドレスを入力する欄が出現しているので、それぞれ適当な名前とメールアドレスを入力した。
 
-![ObsidianでTeXにエクスポート](./sample/images/export_to_tex_obsidian.png)
+![](./sample/images/export_to_tex_obsidian.png)
 
 ## 編集の操作
 
 ここでは、README.mdをベースにレポートの制作を実験した。
 まずは、左サイドバーからREADME.mdを選択し、編集画面を開いた。適当に文章を編集したら、すでに古い.texがないことを確認し、上からスワイプしてCommand Palletteを開き、「Export To TeX Enhanced: Export To TeX」を選択した。
 
-![ObsidianでGitHubに同期](./sample/images/sync_with_github_obsidian.png)
+![](./sample/images/sync_with_github_obsidian.png)
 
 すると、タイトルなどの情報を入力する画面が表示されるので、適当に入力して「OK」を押した。続いて画像や表のタイトルを入力する画面が表示されるので、適当に入力して「OK」を押した。
 
-![GitHub ActionsでPDFが生成](./sample/images/github_actions_generate_pdf.png)
+![](./sample/images/github_actions_generate_pdf.png)
 
 しばらく待つと、.texファイルが生成され、同じディレクトリに保存された。
 
 .texができていることを確認したら、上からスワイプしてCommand Palletteを開き、「Git: Commit-and-sync」を選択した。
 
-![追加のスクリーンショット](./sample/images/additional_screenshot.png)
+![](./sample/images/extra_screenshot.png)
 
 しばらく待つと、Pushed xx files to remoteという表示とともに、GitHub側に変更が反映されていることが確認できた。
 
@@ -136,7 +137,7 @@
 これをダウンロードして確認すると、編集が反映されたPDFファイルができていることが確認できた。
 
 
-![リリースの確認](./sample/images/check_release.png)
+![](./sample/images/check_release.png)
 
 
 # 結果

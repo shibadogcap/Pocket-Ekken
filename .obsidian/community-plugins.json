@@ -1,9 +1,9 @@
 [
   "templater-obsidian",
-  "export-to-tex-enhanced",
   "obsidian-latex-suite",
   "file-explorer-plus",
   "copilot",
   "obsidian-languagetool-plugin",
-  "obsidian-git"
+  "obsidian-git",
+  "export-to-tex-enhanced"
 ]

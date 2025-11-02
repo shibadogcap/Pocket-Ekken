@@ -1,0 +1,17 @@
+{
+  "refCommand": "cref",
+  "defaultToEquation": false,
+  "additionalMathEnvironments": [],
+  "generateLabels": true,
+  "compressNewlines": false,
+  "imagePathSettings": 0,
+  "numberedSections": true,
+  "preamble": "\\documentclass[paper=a4]{jlreq}\n\\usepackage{caption}\n\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage{amsthm}\n\\usepackage{amsfonts}\n\\usepackage{mathtools}\n\\usepackage{graphicx}\n\\usepackage{multirow}\n\\usepackage{hyperref}\n\\usepackage{diffcoeff}\n\\usepackage{comment}\n\\usepackage{mhchem}\n\\usepackage[separate-uncertainty]{siunitx}\n\\usepackage{newunicodechar}\n\\usepackage{listings}\n\\usepackage{float}\n\\usepackage{lscape}\n\\usepackage{adjustbox}\n\\usepackage{tabularx}\n\\usepackage{booktabs}\n\\usepackage{longtable}\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\NewDocumentCommand\\degC{}{\\ensuremath{^\\circ\\symup{C}}}\n\\NewDocumentCommand\\abs{m}{\\left|#1\\right|}\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\jlreqsetup{\n    appendix_counter={\n        section={\n            value=0,\n            the={\\Alph{section}}\n        },\n        table={\n            value=0,\n            the={\\Alph{section}\\arabic{table}}\n        },\n        figure={\n            value=0,\n            the={\\Alph{section}\\arabic{figure}}\n        }\n    },\n    appendix_heading={\n        section={\n            label_format={付録\\thesection:}\n        }\n    }\n}\n\n\\title{{{title}}}\n\\author{{{affiliation}} \\\\ {{student_id}} {{name}}}\n\\date{{{date}}}\n\n\n\\begin{document}\n",
+  "postamble": "\n\\end{document}",
+  "generateCaptions": true,
+  "figurePosition": "H",
+  "tablePosition": "H",
+  "askForFrontmatter": true,
+  "askForCaptions": true,
+  "askForExportPath": false
+}

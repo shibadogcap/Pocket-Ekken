@@ -584,7 +584,7 @@ var main_exports = {};
 __export(main_exports, {
   default: () => ExportToTeXPlugin
 });
-var import_obsidian6 = require("obsidian");
+var import_obsidian7 = require("obsidian");
 
 // node_modules/.pnpm/bail@2.0.2/node_modules/bail/index.js
 function bail(error) {
@@ -9224,8 +9224,8 @@ function tokenizeDirectiveContainer(effects, ok2, nok) {
   }
   function contentContinue(code2) {
     if (code2 === null) {
-      const t = effects.exit("chunkDocument");
-      self.parser.lazy[t.start.line] = false;
+      const t2 = effects.exit("chunkDocument");
+      self.parser.lazy[t2.start.line] = false;
       return after(code2);
     }
     if (markdownLineEnding(code2)) {
@@ -9236,13 +9236,13 @@ function tokenizeDirectiveContainer(effects, ok2, nok) {
   }
   function nonLazyLineAfter(code2) {
     effects.consume(code2);
-    const t = effects.exit("chunkDocument");
-    self.parser.lazy[t.start.line] = false;
+    const t2 = effects.exit("chunkDocument");
+    self.parser.lazy[t2.start.line] = false;
     return lineStart;
   }
   function lineAfter(code2) {
-    const t = effects.exit("chunkDocument");
-    self.parser.lazy[t.start.line] = false;
+    const t2 = effects.exit("chunkDocument");
+    self.parser.lazy[t2.start.line] = false;
     return after(code2);
   }
   function after(code2) {
@@ -11273,7 +11273,7 @@ var ExportToTexSettings = class {
     this.compressNewlines = false;
     this.imagePathSettings = 0 /* RelativeToRoot */;
     this.numberedSections = true;
-    this.preamble = "\\documentclass[paper=a4]{jlreq}\n\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage{amsthm}\n\\usepackage{amsfonts}\n\\usepackage{mathtools}\n\\usepackage{graphicx}\n\\usepackage{multirow}\n\\usepackage{hyperref}\n\\usepackage{diffcoeff}\n\\usepackage{comment}\n\\usepackage{mhchem}\n\\usepackage[separate-uncertainty]{siunitx}\n\\usepackage{newunicodechar}\n\\usepackage{listings}\n\\usepackage{float}\n\\usepackage{lscape}\n\\usepackage{adjustbox}\n\\usepackage{tabularx}\n\\usepackage{booktabs}\n\\usepackage{longtable}\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\NewDocumentCommand\\degC{}{\\ensuremath{^\\circ\\symup{C}}}\n\\NewDocumentCommand\\abs{m}{\\left|#1\\right|}\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\jlreqsetup{\n    appendix_counter={\n        section={\n            value=0,\n            the={\\Alph{section}}\n        },\n        table={\n            value=0,\n            the={\\Alph{section}\\arabic{table}}\n        },\n        figure={\n            value=0,\n            the={\\Alph{section}\\arabic{figure}}\n        }\n    },\n    appendix_heading={\n        section={\n            label_format={\u4ED8\u9332\\thesection:}\n        }\n    }\n}\n\n\\title{{{title}}}\n\\author{{{affiliation}} \\\\ {{student_id}} {{name}}}\n\\date{{{date}}}\n\n\n\\begin{document}\n";
+    this.preamble = "\\documentclass[paper=a4]{jlreq}\n\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage{amsthm}\n\\usepackage{amsfonts}\n\\usepackage{mathtools}\n\\usepackage{graphicx}\n\\usepackage{multirow}\n\\usepackage{hyperref}\n\\usepackage{diffcoeff}\n\\usepackage{comment}\n\\usepackage{mhchem}\n\\usepackage[separate-uncertainty]{siunitx}\n\\usepackage{newunicodechar}\n\\usepackage{listings}\n\\usepackage{float}\n\\usepackage{lscape}\n\\usepackage{adjustbox}\n\\usepackage{tabularx}\n\\usepackage{booktabs}\n\\usepackage{longtable}\n\\usepackage{caption}\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\NewDocumentCommand\\degC{}{\\ensuremath{^\\circ\\symup{C}}}\n\\NewDocumentCommand\\abs{m}{\\left|#1\\right|}\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\jlreqsetup{\n    appendix_counter={\n        section={\n            value=0,\n            the={\\Alph{section}}\n        },\n        table={\n            value=0,\n            the={\\Alph{section}\\arabic{table}}\n        },\n        figure={\n            value=0,\n            the={\\Alph{section}\\arabic{figure}}\n        }\n    },\n    appendix_heading={\n        section={\n            label_format={\u4ED8\u9332\\thesection:}\n        }\n    }\n}\n\n\\title{{{title}}}\n\\author{{{affiliation}} \\\\ {{student_id}} {{name}}}\n\\date{{{date}}}\n\n\n\\begin{document}\n";
     this.postamble = "\n\\end{document}";
     this.generateCaptions = true;
     this.figurePosition = "h";
@@ -11293,6 +11293,13 @@ function ensureValidTemplate(template) {
     if (docClassMatch) {
       const insertIndex = result.indexOf(docClassMatch[0]) + docClassMatch[0].length;
       result = result.substring(0, insertIndex) + "\\usepackage{amsmath}\n" + result.substring(insertIndex);
+    }
+  }
+  if (!result.match(/\\usepackage(\[.*?\])?\{caption\}/)) {
+    const docClassMatch = result.match(/\\documentclass[^\n]*\n/);
+    if (docClassMatch) {
+      const insertIndex = result.indexOf(docClassMatch[0]) + docClassMatch[0].length;
+      result = result.substring(0, insertIndex) + "\\usepackage{caption}\n" + result.substring(insertIndex);
     }
   }
   if (!result.match(/\\begin\{document\}/)) {
@@ -11981,7 +11988,10 @@ var Visitor = class {
   visitImage(image) {
     const figureIndex = this._figures.length;
     const caption = image.alt || image.title || "Figure";
-    const imageSource = this.extractNodeSource(image);
+    let imageSource = this.extractNodeSource(image);
+    if (!imageSource && (image.url || image.alt)) {
+      imageSource = `![${image.alt || ""}](${image.url || ""})`;
+    }
     this._figures.push({
       index: figureIndex,
       alt: image.alt || "",
@@ -12008,18 +12018,21 @@ var Visitor = class {
       this.emit("\\includegraphics[width=0.9\\textwidth,keepaspectratio]{");
       this.emit(image.url);
       this.emit("}\n");
-      if (image.title || image.alt) {
-        this.emit(`\\captionof{figure}{\\sffamily ${image.title || ""} ${image.alt || ""}}`);
-        this.label(image);
-        this.emit("\n");
-      }
       this.end("center");
     }
   }
   visitTable(table) {
     const columns = table.children[0].children.length;
     const rows = table.children.length;
-    const tableSource = this.extractNodeSource(table);
+    let tableSource = this.extractNodeSource(table);
+    if (!tableSource) {
+      const headerRow = table.children[0];
+      const headerCells = headerRow.children.map(() => "Header").join(" | ");
+      const separator = headerRow.children.map(() => "---").join(" | ");
+      tableSource = `| ${headerCells} |
+| ${separator} |
+| ... ${rows - 1} more rows ... |`;
+    }
     const tableIndex = this._tables.length;
     this._tables.push({
       index: tableIndex,
@@ -12137,14 +12150,8 @@ var Visitor = class {
         this.emit("{\\small\n");
         this.emit("\\setlength{\\tabcolsep}{2pt}\n");
       }
-      if (useSmallFont) {
-        this.emit(`\\begin{tabularx}{\\textwidth}{${"X".repeat(columns)}}
+      this.emit(`\\begin{tabularx}{\\textwidth}{${"X".repeat(columns)}}
 `);
-      } else {
-        const colSpec = "l ".repeat(columns).trim();
-        this.emit(`\\begin{tabular}{${colSpec}}
-`);
-      }
       this.emit("\\toprule\n");
       table.children.forEach((row, index2) => {
         this.visitTableRowWithSummaryDetection(row, index2, table.children.length, false);
@@ -12153,11 +12160,7 @@ var Visitor = class {
           this.emit("\\midrule\n");
       });
       this.emit("\\bottomrule\n");
-      if (useSmallFont) {
-        this.emit("\\end{tabularx}\n");
-      } else {
-        this.emit("\\end{tabular}\n");
-      }
+      this.emit("\\end{tabularx}\n");
       if (useSmallFont) {
         this.emit("}\n");
       }
@@ -12662,11 +12665,16 @@ var TeXPrinter = class {
         console.log("Compressing newlines");
         tex = TeXPrinter.compressNewlines(tex);
       }
-      const frontmatter2 = ((_a = this.app.metadataCache.getFileCache(this.app.vault.getAbstractFileByPath(vfile2.path))) == null ? void 0 : _a.frontmatter) || {};
-      const fileName = ((_b = vfile2.path.split("/").pop()) == null ? void 0 : _b.replace(/\.md$/, "")) || "Untitled";
-      frontmatter2.title = frontmatter2.title || fileName;
-      if (overrideFrontmatter) {
-        Object.assign(frontmatter2, overrideFrontmatter);
+      let frontmatter2 = {};
+      if (overrideFrontmatter && Object.keys(overrideFrontmatter).length > 0) {
+        frontmatter2 = __spreadValues({}, overrideFrontmatter);
+      } else {
+        const fileFrontmatter = ((_a = this.app.metadataCache.getFileCache(this.app.vault.getAbstractFileByPath(vfile2.path))) == null ? void 0 : _a.frontmatter) || {};
+        frontmatter2 = __spreadValues({}, fileFrontmatter);
+      }
+      if (!frontmatter2.title) {
+        const fileName = ((_b = vfile2.path.split("/").pop()) == null ? void 0 : _b.replace(/\.md$/, "")) || "Untitled";
+        frontmatter2.title = fileName;
       }
       let preamble = this.settings.preamble;
       let postamble = this.settings.postamble;
@@ -12776,6 +12784,45 @@ var translations = {
       },
       resetButton: "Reset to default",
       resetConfirm: "Reset settings to default?"
+    },
+    modals: {
+      frontmatter: {
+        title: "Edit Frontmatter Fields",
+        description: "Update or add frontmatter fields:",
+        saveToMarkdown: "Save to Markdown file",
+        saveToMarkdownDesc: "Update the frontmatter in the Markdown file",
+        ok: "OK",
+        cancel: "Cancel"
+      },
+      caption: {
+        title: "Add Captions",
+        noItems: "No tables or figures found.",
+        items: "Items",
+        preview: "Preview:",
+        imageInfo: "Image Info:",
+        path: "Path:",
+        altText: "Alt text:",
+        noImagePath: "No image path",
+        noAltText: "No alt text",
+        captionLabel: "Caption",
+        captionPlaceholder: 'E.g., "Comparison of results"',
+        ok: "OK",
+        cancel: "Cancel"
+      },
+      overwrite: {
+        title: "File already exists",
+        message: 'A file named "{0}" already exists. Do you want to overwrite it?',
+        overwrite: "Overwrite",
+        cancel: "Cancel"
+      }
+    },
+    notices: {
+      exported: "Tex exported to {0}",
+      exportedToClipboard: "Tex exported to clipboard",
+      overwritten: "Tex file overwritten: {0}",
+      frontmatterUpdated: "Frontmatter updated in Markdown file",
+      frontmatterAdded: "Frontmatter added to Markdown file",
+      frontmatterUpdateFailed: "Failed to update frontmatter in Markdown file"
     }
   },
   ja: {
@@ -12831,6 +12878,45 @@ var translations = {
       },
       resetButton: "\u30C7\u30D5\u30A9\u30EB\u30C8\u306B\u30EA\u30BB\u30C3\u30C8",
       resetConfirm: "\u8A2D\u5B9A\u3092\u30EA\u30BB\u30C3\u30C8\u3057\u307E\u3059\u304B\uFF1F"
+    },
+    modals: {
+      frontmatter: {
+        title: "\u30D5\u30ED\u30F3\u30C8\u30DE\u30BF\u30FC\u3092\u7DE8\u96C6",
+        description: "\u30D5\u30ED\u30F3\u30C8\u30DE\u30BF\u30FC\u9805\u76EE\u3092\u66F4\u65B0\u307E\u305F\u306F\u8FFD\u52A0:",
+        saveToMarkdown: "Markdown\u30D5\u30A1\u30A4\u30EB\u306B\u4FDD\u5B58",
+        saveToMarkdownDesc: "Markdown\u30D5\u30A1\u30A4\u30EB\u306E\u30D5\u30ED\u30F3\u30C8\u30DE\u30BF\u30FC\u3092\u66F4\u65B0\u3059\u308B",
+        ok: "OK",
+        cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB"
+      },
+      caption: {
+        title: "\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u3092\u8FFD\u52A0",
+        noItems: "\u8868\u3084\u56F3\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002",
+        items: "\u30A2\u30A4\u30C6\u30E0",
+        preview: "\u30D7\u30EC\u30D3\u30E5\u30FC:",
+        imageInfo: "\u753B\u50CF\u60C5\u5831:",
+        path: "\u30D1\u30B9:",
+        altText: "Alt \u30C6\u30AD\u30B9\u30C8:",
+        noImagePath: "\u753B\u50CF\u30D1\u30B9\u306A\u3057",
+        noAltText: "Alt \u30C6\u30AD\u30B9\u30C8\u306A\u3057",
+        captionLabel: "\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3",
+        captionPlaceholder: '\u4F8B: "\u7D50\u679C\u306E\u6BD4\u8F03"',
+        ok: "OK",
+        cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB"
+      },
+      overwrite: {
+        title: "\u30D5\u30A1\u30A4\u30EB\u304C\u65E2\u306B\u5B58\u5728\u3057\u307E\u3059",
+        message: '"{0}" \u3068\u3044\u3046\u540D\u524D\u306E\u30D5\u30A1\u30A4\u30EB\u304C\u65E2\u306B\u5B58\u5728\u3057\u307E\u3059\u3002\u4E0A\u66F8\u304D\u3057\u307E\u3059\u304B\uFF1F',
+        overwrite: "\u4E0A\u66F8\u304D",
+        cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB"
+      }
+    },
+    notices: {
+      exported: "TeX\u30D5\u30A1\u30A4\u30EB\u3092 {0} \u306B\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u3057\u307E\u3057\u305F",
+      exportedToClipboard: "TeX\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u3057\u307E\u3057\u305F",
+      overwritten: "TeX\u30D5\u30A1\u30A4\u30EB\u3092\u4E0A\u66F8\u304D\u3057\u307E\u3057\u305F: {0}",
+      frontmatterUpdated: "Markdown\u30D5\u30A1\u30A4\u30EB\u306E\u30D5\u30ED\u30F3\u30C8\u30DE\u30BF\u30FC\u3092\u66F4\u65B0\u3057\u307E\u3057\u305F",
+      frontmatterAdded: "Markdown\u30D5\u30A1\u30A4\u30EB\u306B\u30D5\u30ED\u30F3\u30C8\u30DE\u30BF\u30FC\u3092\u8FFD\u52A0\u3057\u307E\u3057\u305F",
+      frontmatterUpdateFailed: "Markdown\u30D5\u30A1\u30A4\u30EB\u306E\u30D5\u30ED\u30F3\u30C8\u30DE\u30BF\u30FC\u66F4\u65B0\u306B\u5931\u6557\u3057\u307E\u3057\u305F"
     }
   }
 };
@@ -12843,6 +12929,21 @@ function getCurrentLanguage() {
   }
   return "en";
 }
+function t(key, language = getCurrentLanguage()) {
+  const keys2 = key.split(".");
+  let value2 = translations[language];
+  for (const k of keys2) {
+    value2 = value2 == null ? void 0 : value2[k];
+    if (value2 === void 0) {
+      value2 = translations["en"];
+      for (const k2 of keys2) {
+        value2 = value2 == null ? void 0 : value2[k2];
+      }
+      return value2 != null ? value2 : key;
+    }
+  }
+  return value2 != null ? value2 : key;
+}
 
 // src/plugin/settingsTabs.ts
 var ExportToTeXSettingTab = class extends import_obsidian3.PluginSettingTab {
@@ -12853,7 +12954,7 @@ var ExportToTeXSettingTab = class extends import_obsidian3.PluginSettingTab {
   display() {
     const { containerEl } = this;
     const lang = getCurrentLanguage();
-    const t = (key) => {
+    const t2 = (key) => {
       const keys2 = key.split(".");
       let value2 = translations[lang].settings;
       for (const k of keys2) {
@@ -12862,30 +12963,30 @@ var ExportToTeXSettingTab = class extends import_obsidian3.PluginSettingTab {
       return value2 != null ? value2 : key;
     };
     containerEl.empty();
-    containerEl.createEl("h2", { text: t("title") });
-    new import_obsidian3.Setting(containerEl).setName(t("generateLabels.name")).setDesc(t("generateLabels.desc")).addToggle((toggle) => {
+    containerEl.createEl("h2", { text: t2("title") });
+    new import_obsidian3.Setting(containerEl).setName(t2("generateLabels.name")).setDesc(t2("generateLabels.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.generateLabels).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.generateLabels = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("refCommand.name")).setDesc(t("refCommand.desc")).addText((text4) => text4.setValue(this.plugin.settings.refCommand).onChange((value2) => __async(this, null, function* () {
+    new import_obsidian3.Setting(containerEl).setName(t2("refCommand.name")).setDesc(t2("refCommand.desc")).addText((text4) => text4.setValue(this.plugin.settings.refCommand).onChange((value2) => __async(this, null, function* () {
       this.plugin.settings.refCommand = value2;
       yield this.plugin.saveData(this.plugin.settings);
     })));
-    new import_obsidian3.Setting(containerEl).setName(t("numberedSections.name")).setDesc(t("numberedSections.desc")).addToggle((toggle) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("numberedSections.name")).setDesc(t2("numberedSections.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.numberedSections).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.numberedSections = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("compressNewlines.name")).setDesc(t("compressNewlines.desc")).addToggle((toggle) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("compressNewlines.name")).setDesc(t2("compressNewlines.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.compressNewlines).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.compressNewlines = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("preamble.name")).setDesc(t("preamble.desc")).addTextArea((text4) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("preamble.name")).setDesc(t2("preamble.desc")).addTextArea((text4) => {
       text4.setValue(this.plugin.settings.preamble).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.preamble = value2;
         yield this.plugin.saveData(this.plugin.settings);
@@ -12894,7 +12995,7 @@ var ExportToTeXSettingTab = class extends import_obsidian3.PluginSettingTab {
       text4.inputEl.style.fontFamily = "monospace";
       text4.inputEl.style.fontSize = "12px";
     });
-    new import_obsidian3.Setting(containerEl).setName(t("postamble.name")).setDesc(t("postamble.desc")).addTextArea((text4) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("postamble.name")).setDesc(t2("postamble.desc")).addTextArea((text4) => {
       text4.setValue(this.plugin.settings.postamble).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.postamble = value2;
         yield this.plugin.saveData(this.plugin.settings);
@@ -12903,46 +13004,46 @@ var ExportToTeXSettingTab = class extends import_obsidian3.PluginSettingTab {
       text4.inputEl.style.fontFamily = "monospace";
       text4.inputEl.style.fontSize = "12px";
     });
-    new import_obsidian3.Setting(containerEl).setName(t("generateCaptions.name")).setDesc(t("generateCaptions.desc")).addToggle((toggle) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("generateCaptions.name")).setDesc(t2("generateCaptions.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.generateCaptions).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.generateCaptions = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("figurePosition.name")).setDesc(t("figurePosition.desc")).addText((text4) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("figurePosition.name")).setDesc(t2("figurePosition.desc")).addText((text4) => {
       text4.setValue(this.plugin.settings.figurePosition);
       text4.onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.figurePosition = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("tablePosition.name")).setDesc(t("tablePosition.desc")).addText((text4) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("tablePosition.name")).setDesc(t2("tablePosition.desc")).addText((text4) => {
       text4.setValue(this.plugin.settings.tablePosition);
       text4.onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.tablePosition = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("askForFrontmatter.name")).setDesc(t("askForFrontmatter.desc")).addToggle((toggle) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("askForFrontmatter.name")).setDesc(t2("askForFrontmatter.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.askForFrontmatter).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.askForFrontmatter = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("askForCaptions.name")).setDesc(t("askForCaptions.desc")).addToggle((toggle) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("askForCaptions.name")).setDesc(t2("askForCaptions.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.askForCaptions).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.askForCaptions = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.Setting(containerEl).setName(t("askForExportPath.name")).setDesc(t("askForExportPath.desc")).addToggle((toggle) => {
+    new import_obsidian3.Setting(containerEl).setName(t2("askForExportPath.name")).setDesc(t2("askForExportPath.desc")).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings.askForExportPath).onChange((value2) => __async(this, null, function* () {
         this.plugin.settings.askForExportPath = value2;
         yield this.plugin.saveData(this.plugin.settings);
       }));
     });
-    new import_obsidian3.ButtonComponent(containerEl).setButtonText(t("resetButton")).onClick(() => __async(this, null, function* () {
-      if (!window.confirm(t("resetConfirm")))
+    new import_obsidian3.ButtonComponent(containerEl).setButtonText(t2("resetButton")).onClick(() => __async(this, null, function* () {
+      if (!window.confirm(t2("resetConfirm")))
         return;
       this.plugin.settings = new ExportToTexSettings();
       yield this.plugin.saveData(this.plugin.settings);
@@ -12992,35 +13093,42 @@ var FrontmatterCheckModal = class extends import_obsidian4.Modal {
     const addedKeys = /* @__PURE__ */ new Set();
     if (this.templateKeys.length > 0) {
       for (const key of this.templateKeys) {
-        const value2 = currentFrontmatter[key] || "";
+        if (addedKeys.has(key)) {
+          continue;
+        }
+        const value2 = currentFrontmatter[key] !== void 0 ? String(currentFrontmatter[key]) : "";
         fields.push({
           key,
-          label: key.charAt(0).toUpperCase() + key.slice(1),
+          label: this.formatLabel(key),
           placeholder: `Enter ${key}`,
-          value: String(value2)
+          value: value2
         });
         addedKeys.add(key);
       }
     }
     for (const key in currentFrontmatter) {
-      if (!addedKeys.has(key) && currentFrontmatter[key]) {
+      if (!addedKeys.has(key)) {
+        const value2 = currentFrontmatter[key] !== void 0 ? String(currentFrontmatter[key]) : "";
         fields.push({
           key,
-          label: key.charAt(0).toUpperCase() + key.slice(1),
+          label: this.formatLabel(key),
           placeholder: `Enter ${key}`,
-          value: String(currentFrontmatter[key])
+          value: value2
         });
         addedKeys.add(key);
       }
     }
     return fields;
   }
+  formatLabel(key) {
+    return key.replace(/_/g, " ").split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  }
   onOpen() {
     const { contentEl } = this;
     const lang = getCurrentLanguage();
-    contentEl.createEl("h2", { text: "Edit Frontmatter Fields" });
+    contentEl.createEl("h2", { text: t("modals.frontmatter.title", lang) });
     contentEl.createEl("p", {
-      text: `Update or add frontmatter fields:`
+      text: t("modals.frontmatter.description", lang)
     });
     for (const field of this.allFields) {
       let inputEl;
@@ -13030,7 +13138,7 @@ var FrontmatterCheckModal = class extends import_obsidian4.Modal {
         });
       });
     }
-    new import_obsidian4.Setting(contentEl).setName("Save to Markdown file").setDesc("Update the frontmatter in the Markdown file").addToggle((toggle) => {
+    new import_obsidian4.Setting(contentEl).setName(t("modals.frontmatter.saveToMarkdown", lang)).setDesc(t("modals.frontmatter.saveToMarkdownDesc", lang)).addToggle((toggle) => {
       toggle.setValue(this.saveToMarkdown).onChange((value2) => {
         this.saveToMarkdown = value2;
       });
@@ -13040,7 +13148,7 @@ var FrontmatterCheckModal = class extends import_obsidian4.Modal {
       attr: { style: "display: flex; gap: 10px; justify-content: flex-end;" }
     });
     const submitBtn = buttonContainer.createEl("button", {
-      text: "OK",
+      text: t("modals.frontmatter.ok", lang),
       attr: { style: "padding: 8px 16px; cursor: pointer;" }
     });
     submitBtn.addEventListener("click", () => {
@@ -13051,7 +13159,7 @@ var FrontmatterCheckModal = class extends import_obsidian4.Modal {
       });
     });
     const cancelBtn = buttonContainer.createEl("button", {
-      text: "Cancel",
+      text: t("modals.frontmatter.cancel", lang),
       attr: { style: "padding: 8px 16px; cursor: pointer;" }
     });
     cancelBtn.addEventListener("click", () => {
@@ -13067,19 +13175,22 @@ var FrontmatterCheckModal = class extends import_obsidian4.Modal {
 
 // src/modals/captionModal.ts
 var import_obsidian5 = require("obsidian");
-var RECENT_CAPTIONS_KEY = "obsidian-export-tex-recent-captions";
 var CaptionInputModal = class extends import_obsidian5.Modal {
   constructor(app, items, resolve) {
     super(app);
     this.captions = {};
     this.currentItemIndex = 0;
-    this.recentCaptions = [];
     this.tableCounter = 0;
     this.figureCounter = 0;
     this.items = items;
     this.resolve = resolve;
     for (let i = 0; i < items.length; i++) {
-      this.captions[i] = "";
+      const item = items[i];
+      if (item.type === "figure" && item.alt) {
+        this.captions[i] = item.alt;
+      } else {
+        this.captions[i] = "";
+      }
     }
     for (const item of items) {
       if (item.type === "table") {
@@ -13088,36 +13199,16 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
         this.figureCounter++;
       }
     }
-    this.loadRecentCaptions();
-  }
-  loadRecentCaptions() {
-    try {
-      const stored = localStorage.getItem(RECENT_CAPTIONS_KEY);
-      if (stored) {
-        this.recentCaptions = JSON.parse(stored).slice(0, 5);
-      }
-    } catch (e) {
-      console.error("Failed to load recent captions:", e);
-      this.recentCaptions = [];
-    }
-  }
-  saveRecentCaptions() {
-    try {
-      const allCaptions = Object.values(this.captions).filter((c) => c && c.trim());
-      const newRecent = Array.from(/* @__PURE__ */ new Set([...allCaptions, ...this.recentCaptions])).slice(0, 10);
-      localStorage.setItem(RECENT_CAPTIONS_KEY, JSON.stringify(newRecent));
-    } catch (e) {
-      console.error("Failed to save recent captions:", e);
-    }
   }
   onOpen() {
     const { contentEl } = this;
+    const lang = getCurrentLanguage();
     contentEl.style.maxWidth = "900px";
     contentEl.style.maxHeight = "90vh";
     contentEl.style.overflow = "auto";
-    contentEl.createEl("h2", { text: "Add Captions" });
+    contentEl.createEl("h2", { text: t("modals.caption.title", lang) });
     if (this.items.length === 0) {
-      contentEl.createEl("p", { text: "No tables or figures found." });
+      contentEl.createEl("p", { text: t("modals.caption.noItems", lang) });
       return;
     }
     const mainContainer = contentEl.createEl("div", {
@@ -13129,7 +13220,7 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
       }
     });
     listPanel.createEl("p", {
-      text: "Items",
+      text: t("modals.caption.items", lang),
       attr: { style: "margin: 0 0 8px 0; font-weight: bold; font-size: 12px;" }
     });
     const listContainer = listPanel.createEl("div", {
@@ -13172,18 +13263,17 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
       }
     });
     const okBtn = buttonContainer.createEl("button", {
-      text: "OK",
+      text: t("modals.caption.ok", lang),
       attr: {
         style: "padding: 8px 16px; background-color: var(--interactive-accent); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;"
       }
     });
     okBtn.addEventListener("click", () => {
-      this.saveRecentCaptions();
       this.close();
       this.resolve(this.captions);
     });
     const cancelBtn = buttonContainer.createEl("button", {
-      text: "Cancel",
+      text: t("modals.caption.cancel", lang),
       attr: {
         style: "padding: 8px 16px; background-color: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--divider-color); border-radius: 4px; cursor: pointer;"
       }
@@ -13195,6 +13285,7 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
   }
   updateEditorPanel(editorPanel) {
     editorPanel.empty();
+    const lang = getCurrentLanguage();
     const item = this.items[this.currentItemIndex];
     let label4;
     if (item.type === "table") {
@@ -13210,7 +13301,7 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
     });
     const previewSection = editorPanel.createEl("div");
     previewSection.createEl("p", {
-      text: "Preview:",
+      text: t("modals.caption.preview", lang),
       attr: {
         style: "margin: 0 0 8px 0; font-size: 12px; font-weight: bold; color: var(--text-muted);"
       }
@@ -13234,17 +13325,31 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
           }
         });
         infoDiv.innerHTML = `
-          <div style="font-weight: bold; margin-bottom: 8px;">Image Info:</div>
+          <div style="font-weight: bold; margin-bottom: 8px;">${t("modals.caption.imageInfo", lang)}</div>
           <div style="word-break: break-word; font-family: monospace; font-size: 11px;">
-            ${imagePath ? `<div><strong>Path:</strong> ${this.escapeHtml(imagePath)}</div>` : "<div><em>No image path</em></div>"}
-            ${item.alt ? `<div style="margin-top: 4px;"><strong>Alt text:</strong> ${this.escapeHtml(item.alt)}</div>` : ""}
+            ${imagePath ? `<div><strong>${t("modals.caption.path", lang)}</strong> ${this.escapeHtml(imagePath)}</div>` : `<div><em>${t("modals.caption.noImagePath", lang)}</em></div>`}
+            ${item.alt ? `<div style="margin-top: 4px;"><strong>${t("modals.caption.altText", lang)}</strong> ${this.escapeHtml(item.alt)}</div>` : ""}
           </div>
         `;
       }
     } else {
-      previewContainer.createEl("p", {
-        text: item.type === "table" ? `${item.rows} rows \xD7 ${item.cols} columns` : `Figure${item.alt ? ` (${item.alt})` : ""}`
-      });
+      if (item.type === "table") {
+        previewContainer.createEl("p", {
+          text: `${item.rows} rows \xD7 ${item.cols} columns`
+        });
+      } else {
+        const infoDiv = previewContainer.createEl("div", {
+          attr: {
+            style: "padding: 8px; font-size: 12px;"
+          }
+        });
+        infoDiv.innerHTML = `
+          <div style="color: var(--text-muted); margin-bottom: 8px;">
+            <em>${t("modals.caption.noImagePath", lang)}</em>
+          </div>
+          ${item.alt ? `<div><strong>${t("modals.caption.altText", lang)}</strong> ${this.escapeHtml(item.alt)}</div>` : `<div><em>${t("modals.caption.noAltText", lang)}</em></div>`}
+        `;
+      }
     }
     const metaContainer = editorPanel.createEl("div", {
       attr: { style: "font-size: 12px; color: var(--text-muted);" }
@@ -13260,36 +13365,11 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
         attr: { style: "margin: 4px 0;" }
       });
     }
-    let textInput;
-    new import_obsidian5.Setting(editorPanel).setName("Caption").addText((text4) => {
-      textInput = text4.setPlaceholder(`E.g., "Comparison of results"`).setValue(this.captions[this.currentItemIndex] || "").onChange((value2) => {
+    new import_obsidian5.Setting(editorPanel).setName(t("modals.caption.captionLabel", lang)).addText((text4) => {
+      text4.setPlaceholder(t("modals.caption.captionPlaceholder", lang)).setValue(this.captions[this.currentItemIndex] || "").onChange((value2) => {
         this.captions[this.currentItemIndex] = value2;
       });
     });
-    if (this.recentCaptions.length > 0) {
-      editorPanel.createEl("p", {
-        text: "Recent captions:",
-        attr: {
-          style: "margin: 12px 0 8px 0; font-size: 12px; font-weight: bold; color: var(--text-muted);"
-        }
-      });
-      const recentContainer = editorPanel.createEl("div", {
-        attr: { style: "display: flex; flex-wrap: wrap; gap: 6px;" }
-      });
-      for (const caption of this.recentCaptions) {
-        const btn = recentContainer.createEl("button", {
-          text: caption,
-          attr: {
-            style: "padding: 6px 10px; font-size: 11px; background-color: var(--background-tertiary); border: 1px solid var(--background-modifier-border); border-radius: 3px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;",
-            title: caption
-          }
-        });
-        btn.addEventListener("click", () => {
-          this.captions[this.currentItemIndex] = caption;
-          textInput.setValue(caption);
-        });
-      }
-    }
   }
   renderMarkdownTable(markdownSource, container) {
     return __async(this, null, function* () {
@@ -13395,8 +13475,56 @@ var CaptionInputModal = class extends import_obsidian5.Modal {
   }
 };
 
+// src/modals/overwriteConfirmModal.ts
+var import_obsidian6 = require("obsidian");
+var OverwriteConfirmModal = class extends import_obsidian6.Modal {
+  constructor(app, fileName, resolve) {
+    super(app);
+    this.fileName = fileName;
+    this.resolve = resolve;
+  }
+  onOpen() {
+    const { contentEl } = this;
+    const lang = getCurrentLanguage();
+    contentEl.createEl("h2", { text: t("modals.overwrite.title", lang) });
+    contentEl.createEl("p", {
+      text: t("modals.overwrite.message", lang).replace("{0}", this.fileName)
+    });
+    const buttonContainer = contentEl.createEl("div", {
+      attr: {
+        style: "display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;"
+      }
+    });
+    const overwriteBtn = buttonContainer.createEl("button", {
+      text: t("modals.overwrite.overwrite", lang),
+      attr: {
+        style: "padding: 8px 16px; background-color: var(--interactive-accent); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;"
+      }
+    });
+    overwriteBtn.addEventListener("click", () => {
+      this.close();
+      this.resolve(true);
+    });
+    const cancelBtn = buttonContainer.createEl("button", {
+      text: t("modals.overwrite.cancel", lang),
+      attr: {
+        style: "padding: 8px 16px; background-color: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--divider-color); border-radius: 4px; cursor: pointer;"
+      }
+    });
+    cancelBtn.addEventListener("click", () => {
+      this.close();
+      this.resolve(false);
+    });
+    cancelBtn.focus();
+  }
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
+  }
+};
+
 // src/main.ts
-var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
+var ExportToTeXPlugin = class extends import_obsidian7.Plugin {
   constructor() {
     super(...arguments);
     this.settings = new ExportToTexSettings();
@@ -13418,8 +13546,8 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
   addCommands() {
     this.addExportCommand("export-to-tex", "Export To TeX", () => this.app.workspace.getActiveFile(), (x) => this.exportFileToFile(x));
     this.addExportCommand("export-tex-to-clipboard", "Export To Clipboard", () => this.app.workspace.getActiveFile(), (x) => this.exportFileToClipboard(x));
-    this.addExportCommand("export-selection-to-tex", "Export Selection To TeX", () => this.app.workspace.getActiveViewOfType(import_obsidian6.MarkdownView), (x) => this.exportSelectionToFile(x));
-    this.addExportCommand("export-selection-tex-to-clipboard", "Export Selection To Clipboard", () => this.app.workspace.getActiveViewOfType(import_obsidian6.MarkdownView), (x) => this.exportSelectionToClipboard(x));
+    this.addExportCommand("export-selection-to-tex", "Export Selection To TeX", () => this.app.workspace.getActiveViewOfType(import_obsidian7.MarkdownView), (x) => this.exportSelectionToFile(x));
+    this.addExportCommand("export-selection-tex-to-clipboard", "Export Selection To Clipboard", () => this.app.workspace.getActiveViewOfType(import_obsidian7.MarkdownView), (x) => this.exportSelectionToClipboard(x));
   }
   addDebugCommands() {
     this.addExportCommand("export-ast-to-console", "Show AST", () => this.app.workspace.getActiveFile(), exportAstToConsole);
@@ -13537,6 +13665,12 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
       }
       if (Object.keys(captionData).length > 0) {
         const { tables, figures } = printer.getTablesAndFigures(vfile2);
+        console.log("Applying captions:", {
+          captionCount: Object.keys(captionData).length,
+          tableCount: tables.length,
+          figureCount: figures.length,
+          totalItems: tables.length + figures.length
+        });
         contents = this.applyCaptions(contents, captionData, tables, figures);
       }
       if (typeof window.showSaveFilePicker !== "function") {
@@ -13544,8 +13678,23 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
         const dateStr = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0") + "_" + String(now.getHours()).padStart(2, "0") + "-" + String(now.getMinutes()).padStart(2, "0") + "-" + String(now.getSeconds()).padStart(2, "0");
         const newName = `${file.basename}_${dateStr}.tex`;
         const newPath = `${((_b = file.parent) == null ? void 0 : _b.path) || ""}/${newName}`;
-        yield this.app.vault.create(newPath, contents);
-        new import_obsidian6.Notice(`Tex exported to ${newName}`);
+        const existingFile = this.app.vault.getAbstractFileByPath(newPath);
+        if (existingFile) {
+          const shouldOverwrite = yield new Promise((resolve) => {
+            const modal = new OverwriteConfirmModal(this.app, newName, resolve);
+            modal.open();
+          });
+          if (!shouldOverwrite) {
+            return;
+          }
+          yield this.app.vault.modify(existingFile, contents);
+          const lang = getCurrentLanguage();
+          new import_obsidian7.Notice(t("notices.overwritten", lang).replace("{0}", newName));
+        } else {
+          yield this.app.vault.create(newPath, contents);
+          const lang = getCurrentLanguage();
+          new import_obsidian7.Notice(t("notices.exported", lang).replace("{0}", newName));
+        }
       } else {
         if (this.settings.askForExportPath) {
           try {
@@ -13562,7 +13711,8 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
             const writeable = yield fileHandle.createWritable();
             yield writeable.write(contents);
             writeable.close();
-            new import_obsidian6.Notice(`Tex exported to ${fileHandle.name}`);
+            const lang = getCurrentLanguage();
+            new import_obsidian7.Notice(t("notices.exported", lang).replace("{0}", fileHandle.name));
           } catch (AbortError) {
             return;
           }
@@ -13571,8 +13721,23 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
           const dateStr = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
           const newName = `${file.basename}_${dateStr}.tex`;
           const newPath = `${((_c = file.parent) == null ? void 0 : _c.path) || ""}/${newName}`;
-          yield this.app.vault.create(newPath, contents);
-          new import_obsidian6.Notice(`Tex exported to ${newName}`);
+          const existingFile = this.app.vault.getAbstractFileByPath(newPath);
+          if (existingFile) {
+            const shouldOverwrite = yield new Promise((resolve) => {
+              const modal = new OverwriteConfirmModal(this.app, newName, resolve);
+              modal.open();
+            });
+            if (!shouldOverwrite) {
+              return;
+            }
+            yield this.app.vault.modify(existingFile, contents);
+            const lang = getCurrentLanguage();
+            new import_obsidian7.Notice(t("notices.overwritten", lang).replace("{0}", newName));
+          } else {
+            yield this.app.vault.create(newPath, contents);
+            const lang = getCurrentLanguage();
+            new import_obsidian7.Notice(t("notices.exported", lang).replace("{0}", newName));
+          }
         }
       }
     });
@@ -13588,16 +13753,26 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
     }
     allItems.sort((a, b) => a.index - b.index);
     let captionIndex = 0;
-    result = result.replace(/\\caption\{([^}]*)\}/g, (match) => {
-      if (captionIndex < allItems.length) {
-        const item = allItems[captionIndex];
+    let replacementCount = 0;
+    result = result.replace(/\\(?:caption\{[^}]*\}|captionof\{(figure|table)\}\{[^}]*\})/g, (match, captionofType) => {
+      if (captionIndex < Object.keys(captions).length) {
         const captionText = captions[captionIndex];
         captionIndex++;
         if (captionText) {
-          return `\\caption{${captionText}}`;
+          replacementCount++;
+          if (captionofType) {
+            return `\\captionof{${captionofType}}{\\sffamily ${captionText}}`;
+          } else {
+            return `\\caption{\\sffamily ${captionText}}`;
+          }
         }
       }
       return match;
+    });
+    console.log("Caption replacement completed:", {
+      totalCaptions: Object.keys(captions).length,
+      replacements: replacementCount,
+      captionsProcessed: captionIndex
     });
     return result;
   }
@@ -13628,15 +13803,22 @@ var ExportToTeXPlugin = class extends import_obsidian6.Plugin {
       }
       if (Object.keys(captionData).length > 0) {
         const { tables, figures } = printer.getTablesAndFigures(vfile2);
+        console.log("Applying captions (clipboard):", {
+          captionCount: Object.keys(captionData).length,
+          tableCount: tables.length,
+          figureCount: figures.length,
+          totalItems: tables.length + figures.length
+        });
         contents = this.applyCaptions(contents, captionData, tables, figures);
       }
       yield navigator.clipboard.writeText(contents);
-      new import_obsidian6.Notice(`Tex exported to clipboard`);
+      const lang = getCurrentLanguage();
+      new import_obsidian7.Notice(t("notices.exportedToClipboard", lang));
     });
   }
   onExportError(e) {
     console.log(e);
-    new import_obsidian6.Notice(`Error of type "${e.name}" occurred on export. See console for details.`);
+    new import_obsidian7.Notice(`Error of type "${e.name}" occurred on export. See console for details.`);
   }
   updateFrontmatterInMarkdown(file, frontmatter2) {
     return __async(this, null, function* () {
@@ -13651,7 +13833,8 @@ ${newFrontmatterYaml}
 ---
 `);
           yield this.app.vault.modify(file, newContent);
-          new import_obsidian6.Notice("Frontmatter updated in Markdown file");
+          const lang = getCurrentLanguage();
+          new import_obsidian7.Notice(t("notices.frontmatterUpdated", lang));
         } else {
           const newFrontmatterYaml = this.objectToYaml(frontmatter2);
           const newContent = `---
@@ -13659,11 +13842,13 @@ ${newFrontmatterYaml}
 ---
 ${fileContent}`;
           yield this.app.vault.modify(file, newContent);
-          new import_obsidian6.Notice("Frontmatter added to Markdown file");
+          const lang = getCurrentLanguage();
+          new import_obsidian7.Notice(t("notices.frontmatterAdded", lang));
         }
       } catch (error) {
         console.error("Failed to update frontmatter:", error);
-        new import_obsidian6.Notice("Failed to update frontmatter in Markdown file");
+        const lang = getCurrentLanguage();
+        new import_obsidian7.Notice(t("notices.frontmatterUpdateFailed", lang));
       }
     });
   }

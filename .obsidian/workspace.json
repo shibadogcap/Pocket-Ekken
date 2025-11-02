@@ -188,16 +188,14 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
       "switcher:クイックスイッチャーを開く": false,
-      "graph:グラフビューを開く": false,
-      "canvas:新規キャンバスを作成": false,
       "templates:テンプレートを挿入": false,
       "command-palette:コマンドパレットを開く": false,
-      "bases:Create new base": false,
       "templater-obsidian:Templater": false,
       "export-to-tex-enhanced:Export current file to TeX": false,
       "export-to-tex-enhanced:Export current file to clipboard": false,
@@ -207,14 +205,19 @@
   },
   "active": "c9cfd8223f25808b",
   "lastOpenFiles": [
-    "README.md",
+    "sample/sample_2025-11-02.pdf",
+    "sample/sample_2025-11-02.tex",
+    "sample/images/fork_repository_03.png",
     "sample/sample.md",
+    "sample/sample_2025-11-02.out",
+    "sample/sample_2025-11-02.aux",
+    "sample/sample_2025-11-02.log",
+    "README.md",
     "sample/README.md",
     "sample/images/extra_screenshot.png",
     "sample/images/developer_copy_token_04.png",
     "sample/images/developer_generate_token_03.png",
     "sample/images/developer_settings_01.png",
-    "sample/images/fork_repository_03.png",
     "sample/images/fork_repository_02.png",
     "sample/images/fork_repository_01.png",
     "sample/images/obsidian_setup.png",
@@ -226,16 +229,11 @@
     "README_2025-11-02.tex",
     "images",
     "構成",
-    "Image.drawio",
     "copilot/copilot-conversations/やあ@20251102_111804.md",
-    "copilot/copilot-conversations",
-    "copilot",
     "Templater/Ekken.md",
     "無題のファイル.md",
     "Templater/無題のファイル.md",
     "フォルダ/無題のファイル.md",
-    "Templater/無題のファイル 1.md",
-    "main",
-    "Templater"
+    "Templater/無題のファイル 1.md"
   ]
 }
